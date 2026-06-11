@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uncommon Focus</title>
+<meta name="description" content="Endless focus music and a session timer. Built by The Uncommon Business.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23ECFC80'/><circle cx='50' cy='50' r='18' fill='%230B1511'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Instrument+Sans:ital,wght@0,400..600;1,400..600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ambient background layers -->
+<div class="bg-aurora" aria-hidden="true"></div>
+<div class="bg-grain" aria-hidden="true"></div>
+
+<!-- hidden youtube player -->
+<div id="yt-shell" aria-hidden="true"><div id="yt-player"></div></div>
+
+<header class="topbar reveal" style="--d:0">
+  <div class="wordmark">
+    <span class="wordmark-dot" aria-hidden="true"></span>
+    <span class="wordmark-text">Uncommon<em>Focus</em></span>
+  </div>
+  <div class="topbar-right">
+    <span id="stream-status" class="stream-status" role="status">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span id="stream-title">Pick a channel to begin</span>
+    </span>
+  </div>
+</header>
+
+<main class="stage">
+
+  <!-- phase + cycles -->
+  <div class="phase-row reveal" style="--d:1">
+    <span id="phase-label" class="phase-label" data-phase="focus">Focus</span>
+    <span class="cycle-dots" id="cycle-dots" title="Completed focus blocks">
+      <i></i><i></i><i></i><i></i>
+    </span>
+  </div>
+
+  <!-- the orb + ring + clock -->
+  <div class="orb-stack reveal" style="--d:2">
+    <div class="orb" id="orb" aria-hidden="true"></div>
+    <svg class="ring" viewBox="0 0 360 360" aria-hidden="true">
+      <circle class="ring-track" cx="180" cy="180" r="170"/>
+      <circle class="ring-fill" id="ring-fill" cx="180" cy="180" r="170"/>
+    </svg>
+    <div class="clock-wrap">
+      <div id="clock" class="clock">25:00</div>
+      <div id="clock-sub" class="clock-sub">ready when you are</div>
+    </div>
+  </div>
+
+  <!-- transport -->
+  <div class="transport reveal" style="--d:3">
+    <button id="btn-reset" class="btn-ghost" title="Reset session (R)" aria-label="Reset session">
+      <svg viewBox="0 0 24 24"><path d="M4 4v6h6M20 20v-6h-6M20 9A8 8 0 0 0 5.6 5.6L4 10m0 5 1.6 4.4A8 8 0 0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button id="btn-play" class="btn-play" title="Play / pause (Space)" aria-label="Play">
+      <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>
+      <svg id="icon-pause" viewBox="0 0 24 24" hidden><path d="M7 5h3.4v14H7zM13.6 5H17v14h-3.6z"/></svg>
+    </button>
+    <button id="btn-skip" class="btn-ghost" title="Next stream in channel (N)" aria-label="Next stream">
+      <svg viewBox="0 0 24 24"><path d="M6 5.5v13l8.5-6.5zM16.5 5.5h2v13h-2z" fill="currentColor"/></svg>
+    </button>
+  </div>
+
+  <!-- volume -->
+  <div class="volume-row reveal" style="--d:4">
+    <svg class="vol-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4zM15.5 9a4.2 4.2 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <input id="volume" type="range" min="0" max="100" value="70" aria-label="Volume">
+  </div>
+
+  <!-- session presets -->
+  <div class="presets reveal" style="--d:5" role="group" aria-label="Session length">
+    <button class="preset active" data-focus="25" data-break="5">25 <span>/</span> 5</button>
+    <button class="preset" data-focus="50" data-break="10">50 <span>/</span> 10</button>
+    <button class="preset" data-focus="90" data-break="15">90 <span>/</span> 15</button>
+    <button class="preset" id="preset-custom">Custom</button>
+  </div>
+
+  <div class="custom-panel" id="custom-panel" hidden>
+    <label>Focus <input id="custom-focus" type="number" min="1" max="180" value="25"> min</label>
+    <label>Break <input id="custom-break" type="number" min="1" max="60" value="5"> min</label>
+    <label class="toggle-label"><input id="pause-on-break" type="checkbox"> Pause music on breaks</label>
+  </div>
+
+</main>
+
+<!-- channel rail -->
+<nav class="channels reveal" style="--d:6" aria-label="Focus channels">
+  <div class="channels-track" id="channels-track"></div>
+</nav>
+
+<footer class="foot reveal" style="--d:7">
+  <span>Built by <a href="https://www.theuncommonbusiness.com" target="_blank" rel="noopener">The Uncommon Business</a></span>
+  <span class="foot-keys"><kbd>Space</kbd> play <kbd>N</kbd> next stream <kbd>R</kbd> reset</span>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
