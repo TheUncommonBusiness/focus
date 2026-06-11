@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B1511">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Focus">
 <title>Uncommon Focus</title>
 <meta name="description" content="Endless focus music and a session timer. Built by The Uncommon Business.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23ECFC80'/><circle cx='50' cy='50' r='18' fill='%230B1511'/></svg>">
@@ -85,8 +89,8 @@
   </div>
 
   <div class="custom-panel" id="custom-panel" hidden>
-    <label>Focus <input id="custom-focus" type="number" min="1" max="180" value="25"> min</label>
-    <label>Break <input id="custom-break" type="number" min="1" max="60" value="5"> min</label>
+    <label>Focus <input id="custom-focus" type="number" inputmode="numeric" min="1" max="180" value="25"> min</label>
+    <label>Break <input id="custom-break" type="number" inputmode="numeric" min="1" max="60" value="5"> min</label>
     <label class="toggle-label"><input id="pause-on-break" type="checkbox"> Pause music on breaks</label>
   </div>
 

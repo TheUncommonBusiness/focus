@@ -243,6 +243,23 @@ function paintDots() {
   }
 }
 
+/* ── screen wake lock (keep phone awake mid-session) ── */
+
+let wakeLock = null;
+
+async function acquireWakeLock() {
+  if (!("wakeLock" in navigator)) return;
+  try { wakeLock = await navigator.wakeLock.request("screen"); } catch (e) { /* low battery / unsupported */ }
+}
+
+function releaseWakeLock() {
+  if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+}
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && state.playing) acquireWakeLock();
+});
+
 /* ── session control ──────────────────────────── */
 
 function startSession() {
@@ -259,6 +276,7 @@ function startSession() {
   }
   setPlayingUI(true);
   updateSub();
+  acquireWakeLock();
 }
 
 function pauseSession() {
@@ -266,6 +284,7 @@ function pauseSession() {
   state.pendingPlay = false;
   state.endAt = null;
   if (playerReady) player.pauseVideo();
+  releaseWakeLock();
   setPlayingUI(false);
   updateSub();
   paint();

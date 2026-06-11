@@ -25,6 +25,8 @@
 
 html, body { height: 100%; }
 
+html { -webkit-text-size-adjust: 100%; }
+
 body {
   background: var(--bg);
   color: var(--ink);
@@ -36,6 +38,13 @@ body {
   min-height: 100dvh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+button, input, .channel {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* ── ambient layers ───────────────────────────── */
@@ -98,7 +107,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px clamp(20px, 4vw, 44px);
+  padding: calc(22px + env(safe-area-inset-top)) clamp(20px, 4vw, 44px) 22px;
 }
 
 .wordmark {
@@ -168,7 +177,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 22px;
+  gap: clamp(12px, 2.2dvh, 22px);
   padding: 8px 20px 18px;
 }
 
@@ -210,7 +219,7 @@ body {
 
 .orb-stack {
   position: relative;
-  width: min(340px, 72vw);
+  width: min(340px, 78vw, 42dvh);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -294,7 +303,7 @@ body.on-break .ring-fill {
 
 .clock {
   font-family: var(--font-display);
-  font-size: clamp(56px, 13vw, 82px);
+  font-size: clamp(44px, min(13vw, 9.5dvh), 82px);
   font-weight: 360;
   font-variation-settings: "opsz" 110;
   letter-spacing: 0.005em;
@@ -343,6 +352,9 @@ body.on-break .ring-fill {
 .btn-play:active { transform: scale(0.97); }
 
 .btn-play svg { width: 30px; height: 30px; fill: currentColor; }
+
+/* the hidden attribute doesn't hide inline SVG (foreign namespace) */
+.btn-play svg[hidden] { display: none; }
 
 .btn-ghost {
   width: 48px;
@@ -414,6 +426,8 @@ input[type="range"]::-moz-range-thumb {
   gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
+  max-width: 440px;
 }
 
 .preset {
@@ -439,6 +453,8 @@ input[type="range"]::-moz-range-thumb {
   border-color: rgba(236, 252, 128, 0.5);
   color: var(--accent);
 }
+
+.custom-panel[hidden] { display: none; }
 
 .custom-panel {
   display: flex;
@@ -484,6 +500,11 @@ input[type="range"]::-moz-range-thumb {
   overflow-x: auto;
   padding: 8px 2px 14px;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 8px;
+  mask-image: linear-gradient(to right, transparent, #000 18px, #000 calc(100% - 18px), transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 18px, #000 calc(100% - 18px), transparent);
 }
 
 .channels-track::-webkit-scrollbar { display: none; }
@@ -492,6 +513,7 @@ input[type="range"]::-moz-range-thumb {
   flex: 1 0 150px;
   min-width: 150px;
   max-width: 220px;
+  scroll-snap-align: start;
   border-radius: var(--radius);
   border: 1px solid var(--line);
   background: rgba(16, 32, 26, 0.55);
@@ -551,7 +573,7 @@ input[type="range"]::-moz-range-thumb {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  padding: 10px clamp(20px, 4vw, 44px) 20px;
+  padding: 10px clamp(20px, 4vw, 44px) calc(20px + env(safe-area-inset-bottom));
   font-size: 11.5px;
   color: var(--ink-faint);
   letter-spacing: 0.03em;
@@ -586,14 +608,85 @@ kbd {
   .reveal { opacity: 1; transform: none; }
 }
 
+/* ── touch devices ────────────────────────────── */
+
+@media (pointer: coarse) {
+  .foot-keys { display: none; }
+  .foot { justify-content: center; }
+
+  /* iOS zooms the page when focusing inputs under 16px */
+  .custom-panel input[type="number"] { font-size: 16px; }
+
+  /* bigger slider thumb + hit area */
+  input[type="range"] { height: 5px; }
+  input[type="range"]::-webkit-slider-thumb { width: 22px; height: 22px; }
+  input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; }
+
+  /* hover lifts don't make sense on touch */
+  .channel:hover { transform: none; }
+  .btn-play:hover { transform: none; box-shadow: 0 6px 30px rgba(236, 252, 128, 0.22); }
+  .btn-play:active { transform: scale(0.94); }
+  .channel:active { transform: scale(0.97); }
+}
+
 /* ── small screens ────────────────────────────── */
 
 @media (max-width: 640px) {
-  .topbar { padding: 16px 18px; }
-  .stream-status { max-width: 40vw; }
-  .stage { gap: 18px; }
-  .transport { gap: 18px; }
-  .btn-play { width: 64px; height: 64px; }
-  .foot { flex-direction: column; gap: 8px; }
-  .channel { flex: 0 0 150px; }
+  .topbar { padding: calc(14px + env(safe-area-inset-top)) 18px 12px; }
+  .wordmark-text { font-size: 17px; }
+  .stream-status { max-width: 44vw; font-size: 11.5px; }
+  .stage { padding: 4px 16px 10px; }
+  .transport { gap: 20px; }
+  .btn-play { width: 68px; height: 68px; }
+  .btn-ghost { width: 50px; height: 50px; }
+  input[type="range"] { width: min(200px, 56vw); }
+  .preset { padding: 10px 13px; font-size: 12px; }
+  .custom-panel { gap: 12px 18px; }
+  .clock-sub { font-size: 12px; }
+  .channels { padding: 2px 14px 0; }
+  .channel { flex: 0 0 150px; padding: 12px 14px; }
+  .foot { padding: 6px 18px calc(14px + env(safe-area-inset-bottom)); }
+}
+
+/* ── short viewports (small phones, landscape) ── */
+
+@media (max-height: 700px) {
+  .stage { gap: clamp(8px, 1.6dvh, 14px); }
+  .orb-stack { width: min(300px, 78vw, 38dvh); }
+  .btn-play { width: 60px; height: 60px; }
+  .btn-ghost { width: 44px; height: 44px; }
+  .channel-swatch { width: 28px; height: 28px; margin-bottom: 8px; }
+}
+
+@media (max-height: 480px) and (orientation: landscape) {
+  body { overflow-y: auto; }
+  .topbar { padding: calc(10px + env(safe-area-inset-top)) 20px 8px; }
+  .stage {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-areas:
+      "orb phase"
+      "orb transport"
+      "orb volume"
+      "orb presets"
+      "orb custom";
+    column-gap: clamp(24px, 6vw, 64px);
+    row-gap: 12px;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    justify-items: start;
+  }
+  .orb-stack { grid-area: orb; width: min(62dvh, 280px); }
+  .phase-row { grid-area: phase; }
+  .transport { grid-area: transport; }
+  .volume-row { grid-area: volume; }
+  .presets { grid-area: presets; justify-content: flex-start; }
+  .custom-panel { grid-area: custom; justify-content: flex-start; }
+  .channels-track { padding-bottom: 8px; }
+  .channel { padding: 10px 14px; min-width: 132px; flex-basis: 132px; }
+  .channel-swatch { display: none; }
+  .channel-name { font-size: 13.5px; }
+  .channel-desc { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 140px; }
+  .foot { padding-top: 2px; }
 }
