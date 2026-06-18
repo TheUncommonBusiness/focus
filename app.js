@@ -10,7 +10,7 @@ const CHANNELS = [
     name: "Deep Work",
     desc: "lofi beats · 24/7 live",
     swatch: "linear-gradient(135deg,#E8A86B,#8C5A3C)",
-    sources: ["jfKfPfyJRdk", "7NOSDKb0HlU", "lTRiuFIWV54"],
+    sources: ["7NOSDKb0HlU", "X4VbdwhkE10", "5yx6BWlEVcY", "jfKfPfyJRdk", "lTRiuFIWV54"],
   },
   {
     name: "Flow State",
@@ -28,13 +28,13 @@ const CHANNELS = [
     name: "Piano",
     desc: "peaceful keys · 24/7 live",
     swatch: "linear-gradient(135deg,#FCFCF0,#98B09C)",
-    sources: ["4oStw0r33so", "XULUBg_ZcAU"],
+    sources: ["N0snMcR6aaA", "4khIPP--FDU", "w9S5ID3nfOc"],
   },
   {
     name: "Jazz Café",
     desc: "slow jazz · 24/7 live",
     swatch: "linear-gradient(135deg,#E8C46B,#8C3C50)",
-    sources: ["Dx5qFachd3A", "HuFYqnbVbzY", "fEvM-OUbaKs"],
+    sources: ["Dx5qFachd3A", "fEvM-OUbaKs", "O8q9nnyK6Xw", "blAFxjhg62k"],
   },
   {
     name: "Rainfall",
@@ -46,13 +46,13 @@ const CHANNELS = [
     name: "Deep Space",
     desc: "ambient drift · 24/7 live",
     swatch: "linear-gradient(135deg,#5A6BE8,#1A1F3C)",
-    sources: ["tNkZsRW7h2c", "S_MOd40zlYU"],
+    sources: ["AXvnFk38sDQ", "NU96ss5pEoE", "Qtb20K6noho", "FzUgsv3XH3o"],
   },
   {
     name: "Classical",
     desc: "mozart · bach · chopin",
     swatch: "linear-gradient(135deg,#C8A86B,#523C28)",
-    sources: ["jgpJVI3tDbY"],
+    sources: ["jXAEIWcGXwE", "bwZUs26HZI8", "jgpJVI3tDbY"],
   },
 ];
 
