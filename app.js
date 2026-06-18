@@ -16,7 +16,8 @@ const CHANNELS = [
     name: "Flow State",
     desc: "synthwave · 24/7 live",
     swatch: "linear-gradient(135deg,#C46BE8,#3C4A8C)",
-    sources: ["4xDzrJKXOOY", "S_MOd40zlYU"],
+    // last entry is a long-form VOD anchor — VODs don't "end" like live streams, so the channel can never go fully silent
+    sources: ["4xDzrJKXOOY", "S_MOd40zlYU", "0QKQlf8r7ls"],
   },
   {
     name: "Brain Waves",
@@ -28,13 +29,13 @@ const CHANNELS = [
     name: "Piano",
     desc: "peaceful keys · 24/7 live",
     swatch: "linear-gradient(135deg,#FCFCF0,#98B09C)",
-    sources: ["N0snMcR6aaA", "4khIPP--FDU", "w9S5ID3nfOc"],
+    sources: ["N0snMcR6aaA", "4khIPP--FDU", "w9S5ID3nfOc", "EbnH3VHzhu8"],
   },
   {
     name: "Jazz Café",
     desc: "slow jazz · 24/7 live",
     swatch: "linear-gradient(135deg,#E8C46B,#8C3C50)",
-    sources: ["Dx5qFachd3A", "fEvM-OUbaKs", "O8q9nnyK6Xw", "blAFxjhg62k"],
+    sources: ["Dx5qFachd3A", "fEvM-OUbaKs", "O8q9nnyK6Xw", "blAFxjhg62k", "MYPVQccHhAQ"],
   },
   {
     name: "Rainfall",
@@ -46,7 +47,7 @@ const CHANNELS = [
     name: "Deep Space",
     desc: "ambient drift · 24/7 live",
     swatch: "linear-gradient(135deg,#5A6BE8,#1A1F3C)",
-    sources: ["AXvnFk38sDQ", "NU96ss5pEoE", "Qtb20K6noho", "FzUgsv3XH3o"],
+    sources: ["AXvnFk38sDQ", "NU96ss5pEoE", "Qtb20K6noho", "FzUgsv3XH3o", "k3UevKvP9RU"],
   },
   {
     name: "Classical",
@@ -102,6 +103,7 @@ function persist() {
 
 let player = null;
 let playerReady = false;
+let errorStreak = 0; // consecutive failed sources on the current channel
 
 const tag = document.createElement("script");
 tag.src = "https://www.youtube.com/iframe_api";
@@ -121,12 +123,13 @@ window.onYouTubeIframeAPIReady = () => {
       onStateChange: (e) => {
         if (e.data === YT.PlayerState.ENDED) nextSource(); // long videos roll to next source (or loop)
         if (e.data === YT.PlayerState.PLAYING) {
+          errorStreak = 0; // a source played → reset the failure counter
           els.status.classList.add("live");
           const data = player.getVideoData();
           if (data && data.title) els.streamTitle.textContent = data.title;
         }
       },
-      onError: () => nextSource(), // dead/region-locked stream → fallback
+      onError: () => failSource(), // dead/region-locked stream → guarded fallback
     },
   });
 };
@@ -148,6 +151,21 @@ function nextSource() {
   loadSource();
 }
 
+// Called when a source errors. Rotates to the next source, but stops after
+// cycling through every source once so a fully-offline channel doesn't hammer
+// YouTube in an endless retry loop — it shows a calm message instead.
+function failSource() {
+  const ch = CHANNELS[state.channel];
+  errorStreak += 1;
+  if (errorStreak >= ch.sources.length) {
+    errorStreak = 0;
+    els.status.classList.remove("live");
+    els.streamTitle.textContent = `${ch.name} is offline — try another channel`;
+    return;
+  }
+  nextSource();
+}
+
 /* ── channels ui ──────────────────────────────── */
 
 function renderChannels() {
@@ -167,6 +185,7 @@ function renderChannels() {
 function selectChannel(i) {
   state.channel = i;
   state.source = 0;
+  errorStreak = 0;
   persist();
   document.querySelectorAll(".channel").forEach((c, j) =>
     c.classList.toggle("active", j === i));
