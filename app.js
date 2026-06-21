@@ -121,6 +121,10 @@ window.onYouTubeIframeAPIReady = () => {
         if (state.pendingPlay) { state.pendingPlay = false; startSession(); }
       },
       onStateChange: (e) => {
+        // iOS fix: loadVideoById cues but does not autoplay; call playVideo when ready
+        if (e.data === YT.PlayerState.CUED && state.playing && !(state.phase === "break" && state.pauseOnBreak)) {
+          player.playVideo();
+        }
         if (e.data === YT.PlayerState.ENDED) nextSource(); // long videos roll to next source (or loop)
         if (e.data === YT.PlayerState.PLAYING) {
           errorStreak = 0; // a source played → reset the failure counter
