@@ -328,8 +328,8 @@ function resetSession() {
 
 function setPlayingUI(on) {
   document.body.classList.toggle("playing", on);
-  els.iconPlay.hidden = on;
-  els.iconPause.hidden = !on;
+  els.iconPlay.style.display = on ? "none" : "";
+  els.iconPause.style.display = on ? "" : "none";
   els.play.setAttribute("aria-label", on ? "Pause" : "Play");
 }
 
